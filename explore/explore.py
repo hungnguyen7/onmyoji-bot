@@ -11,17 +11,17 @@ import time
 class ExploreFight(Fighter):
     def __init__(self, hwnd=0, mode=0):
         '''
-        初始化
-            :param hwnd=0: 指定窗口句柄：0-否；其他-窗口句柄
-            :param mode=0: 狗粮模式：0-正常模式，1-组队后排狗粮
+        initialization
+             :param hwnd=0: Specified window handle: 0-No; other-window handle
+             :param mode=0: Food mode: 0-normal mode, 1-row dog food after team
         '''
         Fighter.__init__(self, hwnd=hwnd)
 
-        # 读取配置文件
+        # Read configuration file
         conf = configparser.ConfigParser()
         conf.read('conf.ini')
 
-        # 读取狗粮配置
+        # Read food configuration
         if mode == 0:
             raw_gouliang = conf.get('explore', 'gouliang')
         else:
@@ -36,7 +36,7 @@ class ExploreFight(Fighter):
             self.gouliang = [int(raw_gouliang[1]), int(
                 raw_gouliang[4]), int(raw_gouliang[7])]
 
-        # 读取其他配置
+        # Read other configuration
         self.fight_boss_enable = conf.getboolean(
             'explore', 'fight_boss_enable')
         self.slide_shikigami = conf.getboolean('explore', 'slide_shikigami')
@@ -46,7 +46,7 @@ class ExploreFight(Fighter):
 
     def next_scene(self):
         '''
-        移动至下一个场景，每次移动400像素
+        Move to the next scene, 400 pixels at a time
         '''
         x0 = random.randint(510, 1126)
         x1 = x0 - 500
@@ -56,13 +56,13 @@ class ExploreFight(Fighter):
 
     def check_exp_full(self):
         '''
-        检查狗粮经验，并自动换狗粮
-        狗粮序列，1-左; 2-中; 3-右; 4-左后; 5-右后
+        Check food experience and automatically change food
+        Food sequence, 1-left; 2-middle; 3-right; 4-left rear; 5-right rear
         '''
         if self.gouliang == None:
             return
 
-        # 狗粮经验判断
+        # food experience judgment
         gouliang = []
         if 1 in self.gouliang:
             gouliang.append(self.yys.find_game_img(
@@ -80,26 +80,26 @@ class ExploreFight(Fighter):
             gouliang.append(self.yys.find_game_img(
                 'img\\MAN2.png', 1, *TansuoPos.gouliang_rightback, 1, 0.8))
 
-        # 如果都没满则退出
+        # Exit if not full
         res = False
         for item in gouliang:
             res = res or bool(item)
         if not res:
             return
 
-        # 开始换狗粮
+        # Start changing food
         while self.run:
-            # 点击狗粮位置
+            # Click on the position of food
             self.yys.mouse_click_bg(*TansuoPos.change_monster)
             if self.yys.wait_game_img('img\\QUAN-BU.png', 3, False):
                 break
         time.sleep(1)
 
-        # 点击“全部”选项
+        # Click the "All" option
         self.yys.mouse_click_bg(*TansuoPos.quanbu_btn)
         time.sleep(1)
 
-        # 点击卡片
+        # Click on the card
         if self.change_shikigami == 1:
             self.yys.mouse_click_bg(*TansuoPos.n_tab_btn)
         elif self.change_shikigami == 0:
@@ -108,14 +108,14 @@ class ExploreFight(Fighter):
             self.yys.mouse_click_bg(*TansuoPos.r_tab_btn)
         time.sleep(1)
 
-        # 拖放进度条
+        # Drag and drop progress bar
         if self.slide_shikigami:
-            # 读取坐标范围
+            # Read coordinate range
             star_x = TansuoPos.n_slide[0][0]
             end_x = TansuoPos.n_slide[1][0]
             length = end_x - star_x
 
-            # 计算拖放范围
+            # Calculate the drag and drop range
             pos_end_x = int(star_x + length/100*self.slide_shikigami_progress)
             pos_end_y = TansuoPos.n_slide[0][1]
 
@@ -123,7 +123,7 @@ class ExploreFight(Fighter):
                 TansuoPos.n_slide[0], (pos_end_x, pos_end_y))
             time.sleep(1)
 
-        # 更换狗粮
+        # Change dog food
         for i in range(0, len(self.gouliang)):
             if gouliang[i]:
                 if self.gouliang[i] == 1:
@@ -140,10 +140,10 @@ class ExploreFight(Fighter):
 
     def find_exp_moster(self):
         '''
-        寻找经验怪
-            return: 成功返回经验怪的攻打图标位置；失败返回-1
+        Looking for experience monsters
+             return: Return to the position of the attack icon of the experience monster successfully; return -1 on failure
         '''
-        # 查找经验图标
+        # Find experience icon
         exp_pos = self.yys.find_color(
             ((2, 205), (1127, 545)), (140, 122, 44), 2)
         if exp_pos == -1:
@@ -154,44 +154,44 @@ class ExploreFight(Fighter):
             else:
                 exp_pos = (exp_pos[0]+2, exp_pos[1]+205)
 
-        # 查找经验怪攻打图标位置
+        # Find the location of the experience monster attack icon
         find_pos = self.yys.find_game_img(
             'img\\FIGHT.png', 1, (exp_pos[0]-150, exp_pos[1]-250), (exp_pos[0]+150, exp_pos[1]-50))
         if not find_pos:
             return -1
 
-        # 返回经验怪攻打图标位置
+        # Return to the position of the experience monster attack icon
         fight_pos = ((find_pos[0]+exp_pos[0]-150),
                      (find_pos[1]+exp_pos[1]-250))
         return fight_pos
 
     def find_boss(self):
         '''
-        寻找BOSS
-            :return: 成功返回BOSS的攻打图标位置；失败返回-1
+        Find the boss
+             :return: Return the position of the attack icon of the BOSS successfully; return -1 on failure
         '''
-        # 查找BOSS攻打图标位置
+        # Find the location of the boss attack icon
         find_pos = self.yys.find_game_img(
             'img\\BOSS.png', 1, (2, 205), (1127, 545))
         if not find_pos:
             return -1
 
-        # 返回BOSS攻打图标位置
+        # Return to the position of the boss attack icon
         fight_pos = ((find_pos[0]+2), (find_pos[1]+205))
         return fight_pos
 
     def fight_moster(self, mood1, mood2):
         '''
-        打经验怪
-            :return: 打完普通怪返回1；打完boss返回2；未找到经验怪返回-1；未找到经验怪和boss返回-2
+        Fighting experience monsters
+             :return: Return 1 after playing ordinary monsters; return 2 after playing bosses; return -1 if experience monsters are not found; return -2 if experience monsters and bosses are not found
         '''
         while self.run:
             mood1.moodsleep()
-            # 查看是否进入探索界面
+            # Check whether to enter the exploration interface
             self.yys.wait_game_img('img\\YING-BING.png')
-            self.log.info('进入探索页面')
+            self.log.info('Enter the discovery page')
 
-            # 寻找经验怪，未找到则寻找boss，再未找到则退出
+            # Look for the experience monster, look for the boss if you don’t find it, and exit if you don’t find it
             fight_pos = self.find_exp_moster()
             boss = False
             if fight_pos == -1:
@@ -199,49 +199,49 @@ class ExploreFight(Fighter):
                     fight_pos = self.find_boss()
                     boss = True
                     if fight_pos == -1:
-                        self.log.info('未找到经验怪和boss')
+                        self.log.info('No experience monsters and bosses found')
                         return -2
                 else:
-                    self.log.info('未找到经验怪')
+                    self.log.info('No experience monster found')
                     return -1
 
-            # 攻击怪
-            self.click_until('怪', 'img/YING-BING.png', fight_pos, step_time=0.3, appear=False)
-            self.log.info('已进入战斗')
+            # Attack monster
+            self.click_until('strange', 'img/YING-BING.png', fight_pos, step_time=0.3, appear=False)
+            self.log.info('Has entered the battle')
 
-            # 等待式神准备
+            # Waiting for shikigami to prepare
             self.yys.wait_game_img_knn('img\\ZHUN-BEI.png', thread=30)
-            self.log.info('式神准备完成')
+            self.log.info('Shikigami is ready')
 
-            # 检查狗粮经验
+            # Check food experience
             self.check_exp_full()
 
-            # 点击准备，直到进入战斗
-            self.click_until_knn('准备按钮', 'img/ZHUN-BEI.png', *
+            # Click prepare until you enter the battle
+            self.click_until_knn('Ready button', 'img/ZHUN-BEI.png', *
                             TansuoPos.ready_btn, mood1.get1mood()/1000, False, 30)
 
-            # 检查是否打完
+            # Check if it's done
             state = self.check_end()
             mood1.moodsleep()
 
-            # 在战斗结算页面
+            # On the battle settlement page
             self.get_reward(mood2, state)
 
-            # 返回结果
+            # Return result
             if boss:
                 return 2
             else:
                 return 1
 
     def start(self):
-        '''单人探索主循环'''
+        '''Single player to explore the main loop'''
         mood1 = ut.Mood(3)
         mood2 = ut.Mood(3)
         while self.run:
-            # 进入探索内
+            # Enter exploration
             self.switch_to_scene(4)
 
-            # 开始打怪
+            # Start fighting monsters
             i = 0
             while self.run:
                 if i >= 4:
@@ -252,14 +252,14 @@ class ExploreFight(Fighter):
                 elif result == 2:
                     break
                 else:
-                    self.log.info('移动至下一个场景')
+                    self.log.info('Move to the next scene')
                     self.next_scene()
                     i += 1
 
-            # 退出探索
+            # Exit exploration
             self.switch_to_scene(3)
-            self.log.info('结束本轮探索')
+            self.log.info('End this round of exploration')
             time.sleep(0.5)
 
-            # 检查游戏次数
+            # Check the number of games
             self.check_times()

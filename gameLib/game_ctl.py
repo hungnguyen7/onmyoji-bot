@@ -19,9 +19,9 @@ from PIL import Image
 class GameControl():
     def __init__(self, hwnd, quit_game_enable=1):
         '''
-        初始化
-            :param hwnd: 需要绑定的窗口句柄
-            :param quit_game_enable: 程序死掉时是否退出游戏。True为是，False为否
+        initialization
+             :param hwnd: window handle to be bound
+             :param quit_game_enable: Whether to quit the game when the program dies. True is yes, False is no
         '''
         self.run = True
         self.hwnd = hwnd
@@ -53,10 +53,10 @@ class GameControl():
 
     def window_full_shot(self, file_name=None, gray=0):
         """
-        窗口截图
-            :param file_name=None: 截图文件的保存名称
-            :param gray=0: 是否返回灰度图像，0：返回BGR彩色图像，其他：返回灰度黑白图像
-            :return: file_name为空则返回RGB数据
+        Window screenshot
+             :param file_name=None: save name of the screenshot file
+             :param gray=0: whether to return a grayscale image, 0: return a BGR color image, others: return a grayscale black and white image
+             :return: return RGB data if file_name is empty
         """
         try:
             if (not hasattr(self, 'memdc')):
@@ -82,18 +82,18 @@ class GameControl():
                     return cv2.cvtColor(img, cv2.COLOR_BGRA2GRAY)
         except Exception:
             self.init_mem()
-            logging.warning('window_full_shot执行失败')
+            logging.warning('window_full_shot execution failed')
             a = traceback.format_exc()
             logging.warning(a)
 
     def window_part_shot(self, pos1, pos2, file_name=None, gray=0):
         """
-        窗口区域截图
-            :param pos1: (x,y) 截图区域的左上角坐标
-            :param pos2: (x,y) 截图区域的右下角坐标
-            :param file_name=None: 截图文件的保存路径
-            :param gray=0: 是否返回灰度图像，0：返回BGR彩色图像，其他：返回灰度黑白图像
-            :return: file_name为空则返回RGB数据
+        Screenshot of window area
+             :param pos1: (x,y) The coordinates of the upper left corner of the screenshot area
+             :param pos2: (x,y) The coordinates of the lower right corner of the screenshot area
+             :param file_name=None: The save path of the screenshot file
+             :param gray=0: whether to return a grayscale image, 0: return a BGR color image, others: return a grayscale black and white image
+             :return: return RGB data if file_name is empty
         """
         w = pos2[0]-pos1[0]
         h = pos2[1]-pos1[1]
@@ -133,11 +133,11 @@ class GameControl():
 
     def find_color(self, region, color, tolerance=0):
         """
-        寻找颜色
-            :param region: ((x1,y1),(x2,y2)) 欲搜索区域的左上角坐标和右下角坐标
-            :param color: (r,g,b) 欲搜索的颜色
-            :param tolerance=0: 容差值
-            :return: 成功返回客户区坐标，失败返回-1
+        Looking for color
+             :param region: ((x1,y1),(x2,y2)) The coordinates of the upper left corner and the lower right corner of the search area
+             :param color: (r,g,b) the color to be searched
+             :param tolerance=0: tolerance value
+             :return: Returns the client area coordinates successfully, returns -1 on failure
         """
         img = Image.fromarray(self.window_part_shot(
             region[0], region[1]), 'RGB')
@@ -151,7 +151,7 @@ class GameControl():
                     if abs(r1-r2) <= tolerance and abs(g1-g2) <= tolerance and abs(b1-b2) <= tolerance:
                         return x+region[0][0], y+region[0][1]
                 except Exception:
-                    logging.warning('find_color执行失败')
+                    logging.warning('find_color failed to execute')
                     a = traceback.format_exc()
                     logging.warning(a)
                     return -1
@@ -159,11 +159,11 @@ class GameControl():
 
     def check_color(self, pos, color, tolerance=0):
         """
-        对比窗口内某一点的颜色
-            :param pos: (x,y) 欲对比的坐标
-            :param color: (r,g,b) 欲对比的颜色 
-            :param tolerance=0: 容差值
-            :return: 成功返回True,失败返回False
+        Compare the color of a point in the window
+             :param pos: (x,y) the coordinates to be compared
+             :param color: (r,g,b) the color to be compared
+             :param tolerance=0: tolerance value
+             :return: Return True for success, False for failure
         """
         img = Image.fromarray(self.window_full_shot(), 'RGB')
         r1, g1, b1 = color[:3]
@@ -175,15 +175,15 @@ class GameControl():
 
     def find_img(self, img_template_path, part=0, pos1=None, pos2=None, gray=0):
         """
-        查找图片
-            :param img_template_path: 欲查找的图片路径
-            :param part=0: 是否全屏查找，1为否，其他为是
-            :param pos1=None: 欲查找范围的左上角坐标
-            :param pos2=None: 欲查找范围的右下角坐标
-            :param gray=0: 是否彩色查找，0：查找彩色图片，1：查找黑白图片
-            :return: (maxVal,maxLoc) maxVal为相关性，越接近1越好，maxLoc为得到的坐标
+        Find pictures
+             :param img_template_path: the path of the image to find
+             :param part=0: Whether to search in full screen, 1 is no, others are yes
+             :param pos1=None: The coordinates of the upper left corner of the range to be found
+             :param pos2=None: The coordinates of the lower right corner of the range to be found
+             :param gray=0: Whether to search in color, 0: search for color pictures, 1: search for black and white pictures
+             :return: (maxVal,maxLoc) maxVal is the correlation, the closer to 1, the better, maxLoc is the obtained coordinates
         """
-        # 获取截图
+        # Take screenshot
         if part == 1:
             img_src = self.window_part_shot(pos1, pos2, None, gray)
         else:
@@ -191,7 +191,7 @@ class GameControl():
 
         # show_img(img_src)
 
-        # 读入文件
+        # Read file
         if gray == 0:
             img_template = cv2.imread(img_template_path, cv2.IMREAD_COLOR)
         else:
@@ -204,22 +204,22 @@ class GameControl():
             # print(maxLoc)
             return maxVal, maxLoc
         except Exception:
-            logging.warning('find_img执行失败')
+            logging.warning('find_img execution failed')
             a = traceback.format_exc()
             logging.warning(a)
             return 0, 0
 
     def find_img_knn(self, img_template_path, part=0, pos1=None, pos2=None, gray=0, thread=0):
         """
-        查找图片，knn算法
-            :param img_template_path: 欲查找的图片路径
-            :param part=0: 是否全屏查找，1为否，其他为是
-            :param pos1=None: 欲查找范围的左上角坐标
-            :param pos2=None: 欲查找范围的右下角坐标
-            :param gray=0: 是否彩色查找，0：查找彩色图片，1：查找黑白图片
-            :return: 坐标(x, y)，未找到则返回(0, 0)，失败则返回-1
+        Find pictures, knn algorithm
+             :param img_template_path: the path of the image to find
+             :param part=0: Whether to search in full screen, 1 is no, others are yes
+             :param pos1=None: The coordinates of the upper left corner of the range to be found
+             :param pos2=None: The coordinates of the lower right corner of the range to be found
+             :param gray=0: Whether to search in color, 0: search for color pictures, 1: search for black and white pictures
+             :return: coordinates (x, y), return (0, 0) if not found, return -1 if failed
         """
-        # 获取截图
+        # Take screenshot
         if part == 1:
             img_src = self.window_part_shot(pos1, pos2, None, gray)
         else:
@@ -227,7 +227,7 @@ class GameControl():
 
         # show_img(img_src)
 
-        # 读入文件
+        # Read file
         if gray == 0:
             img_template = cv2.imread(img_template_path, cv2.IMREAD_COLOR)
         else:
@@ -238,38 +238,38 @@ class GameControl():
             # print(maxLoc)
             return maxLoc
         except Exception:
-            logging.warning('find_img_knn执行失败')
+            logging.warning('find_img_knn failed to execute')
             a = traceback.format_exc()
             logging.warning(a)
             return -1
 
     def find_multi_img(self, *img_template_path, part=0, pos1=None, pos2=None, gray=0):
         """
-        查找多张图片
-            :param img_template_path: 欲查找的图片路径列表
-            :param part=0: 是否全屏查找，1为否，其他为是
-            :param pos1=None: 欲查找范围的左上角坐标
-            :param pos2=None: 欲查找范围的右下角坐标
-            :param gray=0: 是否彩色查找，0：查找彩色图片，1：查找黑白图片
-            :return: (maxVal,maxLoc) maxVal为相关性列表，越接近1越好，maxLoc为得到的坐标列表
+        Find multiple pictures
+             :param img_template_path: list of image path to find
+             :param part=0: Whether to search in full screen, 1 is no, others are yes
+             :param pos1=None: The coordinates of the upper left corner of the range to be found
+             :param pos2=None: The coordinates of the lower right corner of the range to be found
+             :param gray=0: Whether to search in color, 0: search for color pictures, 1: search for black and white pictures
+             :return: (maxVal,maxLoc) maxVal is a list of correlations, the closer to 1, the better, maxLoc is the list of obtained coordinates
         """
-        # 窗口截图
+        # Window screenshot
         if part == 1:
             img_src = self.window_part_shot(pos1, pos2, None, gray)
         else:
             img_src = self.window_full_shot(None, gray)
 
-        # 返回值列表
+        # Return value list
         maxVal_list = []
         maxLoc_list = []
         for item in img_template_path:
-            # 读入文件
+            # Read file
             if gray == 0:
                 img_template = cv2.imread(item, cv2.IMREAD_COLOR)
             else:
                 img_template = cv2.imread(item, cv2.IMREAD_GRAYSCALE)
 
-            # 开始识别
+            # Start to recognize
             try:
                 res = cv2.matchTemplate(
                     img_src, img_template, cv2.TM_CCOEFF_NORMED)
@@ -277,12 +277,12 @@ class GameControl():
                 maxVal_list.append(maxVal)
                 maxLoc_list.append(maxLoc)
             except Exception:
-                logging.warning('find_multi_img执行失败')
+                logging.warning('find_multi_img failed to execute')
                 a = traceback.format_exc()
                 logging.warning(a)
                 maxVal_list.append(0)
                 maxLoc_list.append(0)
-        # 返回列表
+        # Back to list
         return maxVal_list, maxLoc_list
 
     def activate_window(self):
@@ -291,9 +291,9 @@ class GameControl():
 
     def mouse_move(self, pos, pos_end=None):
         """
-        模拟鼠标移动
-            :param pos: (x,y) 鼠标移动的坐标
-            :param pos_end=None: (x,y) 若pos_end不为空，则鼠标移动至以pos为左上角坐标pos_end为右下角坐标的区域内的随机位置
+        Simulate mouse movement
+             :param pos: (x,y) the coordinates of the mouse movement
+             :param pos_end=None: (x,y) If pos_end is not empty, the mouse will move to a random position in the area where pos is the upper-left coordinate and pos_end is the lower-right coordinate
         """
         pos2 = win32gui.ClientToScreen(self.hwnd, pos)
         if pos_end == None:
@@ -306,7 +306,7 @@ class GameControl():
 
     def mouse_click(self):
         """
-        鼠标单击
+        Mouse click
         """
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
         time.sleep(random.randint(20, 80)/1000)
@@ -314,9 +314,9 @@ class GameControl():
 
     def mouse_drag(self, pos1, pos2):
         """
-        鼠标拖拽
-            :param pos1: (x,y) 起点坐标
-            :param pos2: (x,y) 终点坐标
+        Mouse drag
+             :param pos1: (x,y) starting point coordinates
+             :param pos2: (x,y) End point coordinates
         """
         pos1_s = win32gui.ClientToScreen(self.hwnd, pos1)
         pos2_s = win32gui.ClientToScreen(self.hwnd, pos2)
@@ -340,9 +340,9 @@ class GameControl():
 
     def mouse_click_bg(self, pos, pos_end=None):
         """
-        后台鼠标单击
-            :param pos: (x,y) 鼠标单击的坐标
-            :param pos_end=None: (x,y) 若pos_end不为空，则鼠标单击以pos为左上角坐标pos_end为右下角坐标的区域内的随机位置
+        Background mouse click
+             :param pos: (x,y) the coordinates of the mouse click
+             :param pos_end=None: (x,y) If pos_end is not empty, click the random position in the area where pos is the upper left corner coordinate and pos_end is the lower right corner coordinate
         """
         if self.debug_enable:
             img = self.window_full_shot()
@@ -367,9 +367,9 @@ class GameControl():
 
     def mouse_drag_bg(self, pos1, pos2):
         """
-        后台鼠标拖拽
-            :param pos1: (x,y) 起点坐标
-            :param pos2: (x,y) 终点坐标
+        Background mouse drag
+             :param pos1: (x,y) starting point coordinates
+             :param pos2: (x,y) End point coordinates
         """
         if self.client == 0:
             move_x = np.linspace(pos1[0], pos2[0], num=20, endpoint=True)[0:]
@@ -391,11 +391,11 @@ class GameControl():
 
     def wait_game_img(self, img_path, max_time=100, quit=True):
         """
-        等待游戏图像
-            :param img_path: 图片路径
-            :param max_time=60: 超时时间
-            :param quit=True: 超时后是否退出
-            :return: 成功返回坐标，失败返回False
+        Waiting for game image
+             :param img_path: image path
+             :param max_time=60: timeout
+             :param quit=True: whether to quit after timeout
+             :return: Returns the coordinates on success, returns False on failure
         """
         self.rejectbounty()
         start_time = time.time()
@@ -408,18 +408,18 @@ class GameControl():
             else:
                 time.sleep(0.1)
         if quit:
-            # 超时则退出游戏
+            # Quit the game when timed out
             self.quit_game()
         else:
             return False
 
     def wait_game_img_knn(self, img_path, max_time=100, quit=True, thread=0):
         """
-        等待游戏图像
-            :param img_path: 图片路径
-            :param max_time=60: 超时时间
-            :param quit=True: 超时后是否退出
-            :return: 成功返回坐标，失败返回False
+       Waiting for game image
+             :param img_path: image path
+             :param max_time=60: timeout
+             :param quit=True: whether to quit after timeout
+             :return: Returns the coordinates on success, returns False on failure
         """
         self.rejectbounty()
         start_time = time.time()
@@ -432,20 +432,20 @@ class GameControl():
             else:
                 time.sleep(0.1)
         if quit:
-            # 超时则退出游戏
+            # Quit the game when timed out
             self.quit_game()
         else:
             return False
 
     def wait_game_color(self, region, color, tolerance=0, max_time=60, quit=True):
         """
-        等待游戏颜色
-            :param region: ((x1,y1),(x2,y2)) 欲搜索的区域
-            :param color: (r,g,b) 欲等待的颜色
-            :param tolerance=0: 容差值
-            :param max_time=30: 超时时间
-            :param quit=True: 超时后是否退出
-            :return: 成功返回True，失败返回False
+        Waiting for game color
+             :param region: ((x1,y1),(x2,y2)) the region to search
+             :param color: (r,g,b) the color to wait for
+             :param tolerance=0: tolerance value
+             :param max_time=30: timeout
+             :param quit=True: whether to quit after timeout
+             :return: Return True for success, False for failure
         """
         self.rejectbounty()
         start_time = time.time()
@@ -455,42 +455,42 @@ class GameControl():
                 return True
             time.sleep(1)
         if quit:
-            # 超时则退出游戏
+            # Quit the game when timed out
             self.quit_game()
         else:
             return False
 
     def quit_game(self):
         """
-        退出游戏
+        exit the game
         """
-        self.takescreenshot()  # 保存一下现场
-        self.clean_mem()    # 清理内存
+        self.takescreenshot()  # Save the scene
+        self.clean_mem()    # Clean up memory
         if not self.run:
             return False
         if self.quit_game_enable:
             if self.client == 0:
                 win32gui.SendMessage(
-                    self.hwnd, win32con.WM_DESTROY, 0, 0)  # 退出游戏
+                    self.hwnd, win32con.WM_DESTROY, 0, 0)  # exit the game
             else:
                 os.system(
                     'adb shell am force-stop com.netease.onmyoji.netease_simulator')
-        logging.info('退出，最后显示已保存至/img/screenshots文件夹')
+        logging.info('Exit and finally show that it has been saved to/img/screenshots_folder')
         sys.exit(0)
 
     def takescreenshot(self):
         '''
-        截图
+        Screenshots
         '''
         name = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
         img_src_path = 'img/screenshots/%s.png' %(name)
         self.window_full_shot(img_src_path)
-        logging.info('截图已保存至img/screenshots/%s.png' %(name))
+        logging.info('The screenshot has been saved to img/screenshots/%s.png' %(name))
 
     def rejectbounty(self):
         '''
-        拒绝悬赏
-            :return: 拒绝成功返回True，其他情况返回False
+        Refuse to offer a reward
+             :return: Return True if rejected successfully, False otherwise
         '''
         maxVal, maxLoc = self.find_img('img\\XUAN-SHANG.png')
         if maxVal > 0.9:
@@ -500,14 +500,14 @@ class GameControl():
 
     def find_game_img(self, img_path, part=0, pos1=None, pos2=None, gray=0, thread=0.9):
         '''
-        查找图片
-            :param img_path: 查找路径
-            :param part=0: 是否全屏查找，0为否，其他为是
-            :param pos1=None: 欲查找范围的左上角坐标
-            :param pos2=None: 欲查找范围的右下角坐标
-            :param gray=0: 是否查找黑白图片，0：查找彩色图片，1：查找黑白图片
-            :param thread=0.9: 自定义阈值
-            :return: 查找成功返回位置坐标，否则返回False
+        Find pictures
+             :param img_path: find path
+             :param part=0: Whether to search in full screen, 0 means no, other means yes
+             :param pos1=None: The coordinates of the upper left corner of the range to be found
+             :param pos2=None: The coordinates of the lower right corner of the range to be found
+             :param gray=0: whether to find black and white pictures, 0: find color pictures, 1: find black and white pictures
+             :param thread=0.9: custom threshold
+             :return: Return the position coordinates if the search succeeds, otherwise it returns False
         '''
         self.rejectbounty()
         maxVal, maxLoc = self.find_img(img_path, part, pos1, pos2, gray)
@@ -519,14 +519,14 @@ class GameControl():
 
     def find_game_img_knn(self, img_path, part=0, pos1=None, pos2=None, gray=0, thread=0):
         '''
-        查找图片
-            :param img_path: 查找路径
-            :param part=0: 是否全屏查找，0为否，其他为是
-            :param pos1=None: 欲查找范围的左上角坐标
-            :param pos2=None: 欲查找范围的右下角坐标
-            :param gray=0: 是否查找黑白图片，0：查找彩色图片，1：查找黑白图片
-            :param thread=0: 
-            :return: 查找成功返回位置坐标，否则返回False
+        Find pictures
+             :param img_path: find path
+             :param part=0: Whether to search in full screen, 0 means no, other means yes
+             :param pos1=None: The coordinates of the upper left corner of the range to be found
+             :param pos2=None: The coordinates of the lower right corner of the range to be found
+             :param gray=0: whether to find black and white pictures, 0: find color pictures, 1: find black and white pictures
+             :param thread=0:
+             :return: Return the position coordinates if the search succeeds, otherwise it returns False
         '''
         self.rejectbounty()
         maxLoc = self.find_img_knn(img_path, part, pos1, pos2, gray, thread)
@@ -538,20 +538,20 @@ class GameControl():
 
     def debug(self):
         '''
-        自检分辨率和点击范围
+        Self-check resolution and click range
         '''
-        # 开启自检
+        # Turn on self-test
         self.debug_enable = True
 
-        # 分辨率
+        # Resolution
         self.img = self.window_full_shot()
-        logging.info('游戏分辨率：' + str(self.img.shape))
+        logging.info('Game resolution:' + str(self.img.shape))
 
         while(1):
-            # 点击范围标记
+            # Click on the range marker
             cv2.imshow('Click Area (Press \'q\' to exit)', self.img)
 
-            # 候选图片
+            # Candidate picture
 
             k = cv2.waitKey(1) & 0xFF
             if k == ord('q'):
@@ -562,14 +562,14 @@ class GameControl():
 
     def clean_mem(self):
         '''
-        清理内存
+        Clean up memory
         '''
         self.srcdc.DeleteDC()
         self.memdc.DeleteDC()
         win32gui.ReleaseDC(self.hwnd, self.hwindc)
         win32gui.DeleteObject(self.bmp.GetHandle())
 
-# 测试用
+# For testing
 
 
 def show_img(img):
@@ -578,7 +578,7 @@ def show_img(img):
 
 
 def main():
-    hwnd = win32gui.FindWindow(0, u'阴阳师-网易游戏')
+    hwnd = win32gui.FindWindow(0, u'Onmyoji')
     yys = GameControl(hwnd, 0)
     yys.debug()
 

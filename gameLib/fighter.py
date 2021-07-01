@@ -16,15 +16,15 @@ class Fighter(GameScene):
 
     def __init__(self, emyc=0, hwnd=0):
         '''
-        初始化
-            : param emyc=0: 点怪设置：0-不点怪
-            : param hwnd=0: 指定窗口句柄：0-否；其他-窗口句柄
+        initialization
+             : param emyc=0: point monster setting: 0-no point monster
+             : param hwnd=0: Specified window handle: 0-No; other-window handle
         '''
-        # 初始参数
+        # Initial parameters
         self.emyc = emyc
         self.run = True
 
-        # 读取配置文件
+        # Read configuration file
         conf = configparser.ConfigParser()
         conf.read('conf.ini')
         self.client = conf.getint('DEFAULT', 'client')
@@ -36,50 +36,50 @@ class Fighter(GameScene):
         self.end_operation = conf.getint('DEFAULT', 'end_operation')
         self.run_times = 0
 
-        # 启动日志
+        # Startup log
         self.log = MyLog.mlogger
 
-        # 绑定窗口
+        # Bound window
         if hwnd == 0:
             if self.client == 0:
-                hwnd = win32gui.FindWindow(0, u'阴阳师-网易游戏')
+                hwnd = win32gui.FindWindow(0, u'Onmyoji')
             elif self.client == 1:
-                hwnd = win32gui.FindWindow(0, u'阴阳师 - MuMu模拟器')
+                hwnd = win32gui.FindWindow(0, u'Onmyoji-Simulator')
                 # TansuoPos.InitPosWithClient__()
                 # YuhunPos.InitPosWithClient__()
         self.yys = GameControl(hwnd, quit_game_enable)
-        self.log.info('绑定窗口成功')
+        self.log.info('Bind the window successfully')
         self.log.info(str(hwnd))
 
-        # 激活窗口
+        # Activate window
         self.yys.activate_window()
-        self.log.info('激活窗口成功')
+        self.log.info('Activate the window successfully')
         time.sleep(0.5)
 
-        # 绑定场景
+        # Binding scene
 
-        # 自检
+        # Self-check
         debug_enable = conf.getboolean('others', 'debug_enable')
         if debug_enable:
             task = threading.Thread(target=self.yys.debug)
             task.start()
 
     def check_battle(self):
-        # 检测是否进入战斗
-        self.log.info('检测是否进入战斗')
+        # Check whether to enter the battle
+        self.log.info('Check whether to enter the battle')
         self.yys.wait_game_img('img\\ZI-DONG.png', self.max_win_time)
-        self.log.info('已进入战斗')
+        self.log.info('Has entered the battle')
 
     def check_end(self):
         '''
-        检测是否打完
-            :return: 胜利页面返回0；奖励页面返回1
+        Check whether it is finished
+             :return: The victory page returns 0; the reward page returns 1
         '''
-        self.log.info('检测是战斗是否结束')
+        self.log.info('The test is whether the battle is over')
         start_time = time.time()
         myend = -1
         while time.time()-start_time <= self.max_win_time and self.run:
-            # 拒绝悬赏
+            # Refuse to offer a reward
             self.yys.rejectbounty()
 
             maxVal, maxLoc = self.yys.find_multi_img(
@@ -90,45 +90,45 @@ class Fighter(GameScene):
                 break
             time.sleep(0.5)
         if myend in [0, 3]:
-            self.log.info('战斗成功')
+            self.log.info('Successful battle')
             return 0
         elif myend in [1, 2]:
-            self.log.info('本轮战斗结束')
+            self.log.info('End of this round of battle')
             return 1
 
     def check_times(self):
         '''
-        监测游戏次数是否达到最大次数
+        Monitor whether the number of games reaches the maximum number of times
         '''
         self.run_times = self.run_times + 1
-        self.log.info('游戏已运行'+str(self.run_times)+'次')
+        self.log.info('Game is running'+str(self.run_times)+'Times')
         if(self.run_times == self.max_times):
             if(self.end_operation == 0):
-                self.log.warning('关闭脚本(次数已满)...')
+                self.log.warning('Close script (the number of times is full)...')
                 self.run = False
                 os._exit(0)
             elif(self.end_operation == 1):
-                self.log.warning('关闭游戏(次数已满)...')
+                self.log.warning('Close the game (the number is full)...')
                 self.yys.quit_game()
-                self.log.warning('关闭脚本(次数已满)...')
+                self.log.warning('Close script (the number of times is full)...')
                 self.run = False
                 os._exit(0)
 
     def get_reward(self, mood, state):
         '''
-        结算处理
-            :param mood: 状态函数
-            :param state: 上一步的状态。0-战斗成功页面; 1-领取奖励页面
+        Settlement processing
+             :param mood: state function
+             :param state: The state of the previous step. 0-Successful battle page; 1-Receive reward page
         '''
-        # 初始化结算点
+        # Initialize the settlement point
         mypos = ut.secondposition()
         if state == 0:
             self.yys.mouse_click_bg(mypos)
-            self.log.info('点击结算')
+            self.log.info('Click to check out')
             mood.moodsleep()
         start_time = time.time()
         while time.time()-start_time <= self.max_op_time and self.run:
-            # 拒绝悬赏
+            # Refuse to offer a reward
             self.yys.rejectbounty()
 
             while True:
@@ -138,42 +138,42 @@ class Fighter(GameScene):
                     mypos = newpos
                     break
 
-            # 点击一次结算
+            # Click once to settle
             self.yys.mouse_click_bg(mypos)
-            self.log.info('点击结算')
+            self.log.info('Click to check out')
             mood.moodsleep()
 
-            # 错误纠正
+            # Error correction
             maxVal, maxLoc = self.yys.find_multi_img(
                 'img/FA-SONG-XIAO-XI.png', 'img/ZHI-LIAO-LIANG.png')
             if max(maxVal) > 0.9:
                 self.yys.mouse_click_bg((35, 295), (140, 475))
-                self.log.info('错误纠正')
+                self.log.info('Error correction')
                 mood.moodsleep()
                 continue
 
-            # 正常结算
+            # Normal settlement
             maxVal, maxLoc = self.yys.find_multi_img(
                 'img/SHENG-LI.png', 'img/TIAO-DAN.png', 'img/JIN-BI.png', 'img/JIE-SU.png')
             if max(maxVal) < 0.9:
-                self.log.info('结算成功')
+                self.log.info('Settled successfully')
                 return
 
-        self.log.warning('点击结算失败!')
-        # 提醒玩家点击失败，并在5s后退出
+        self.log.warning('Click to check out failed!')
+        # Remind the player to fail to click and exit after 5s
         self.yys.activate_window()
         time.sleep(5)
         self.yys.quit_game()
 
     def mitama_team_click(self):
         '''
-        御魂标记己方式神
+        Soul marks one's own way god
         '''
         num = self.mitama_team_mark
         if num > 0:
             # 100 1040
             # 125 50
-            # 御魂场景获取标记位置
+            # Obtain the marked location in the Royal Soul scene
             min = (num - 1) * 105 + (num - 1) * 100 + 95
             max = min + 50
             pos = (min, 355), (max, 425)
@@ -186,132 +186,132 @@ class Fighter(GameScene):
                 y2 = pos[1][1]
                 exp_pos = self.yys.find_color(
                     ((x1, y1), (x2, y2)), (134, 227, 96), 5)
-                # print('颜色位置', exp_pos)
+                # print('Color position', exp_pos)
                 if exp_pos != -1:
-                    self.log.info('标记式神成功')
+                    self.log.info('Mark Shikigami success')
                     return True
                 else:
-                    # 点击指定位置并等待下一轮
+                    # Click on the designated location and wait for the next round
                     self.yys.mouse_click_bg(*pos)
-                    self.log.info('标记式神')
+                    self.log.info('Mark shikigami')
                     ut.mysleep(500)
 
-            self.log.warning('标记式神失败')
+            self.log.warning('Mark Shikigami failure')
 
     def click_monster(self):
-        # 点击怪物
+        # Click on the monster
         pass
 
     def click_until(self, tag, img_path, pos, pos_end=None, step_time=0.8, appear=True):
         '''
-        在某一时间段内，后台点击鼠标，直到出现某一图片出现或消失
-            :param tag: 按键名
-            :param img_path: 图片路径
-            :param pos: (x,y) 鼠标单击的坐标
-            :param pos_end=None: (x,y) 若pos_end不为空，则鼠标单击以pos为左上角坐标pos_end为右下角坐标的区域内的随机位置
-            :step_time=0.5: 查询间隔
-            :appear: 图片出现或消失：Ture-出现；False-消失
-            :return: 成功返回True, 失败退出游戏
+        In a certain period of time, click the mouse in the background until a certain picture appears or disappears
+             :param tag: key name
+             :param img_path: image path
+             :param pos: (x,y) the coordinates of the mouse click
+             :param pos_end=None: (x,y) If pos_end is not empty, click the random position in the area where pos is the upper left corner coordinate and pos_end is the lower right corner coordinate
+             :step_time=0.5: query interval
+             :appear: The picture appears or disappears: Ture-appears; False-disappears
+             :return: Return True if successful, exit the game if failed
         '''
-        # 在指定时间内反复监测画面并点击
+        # Repeatedly monitor the screen within the specified time and click
         start_time = time.time()
         while time.time()-start_time <= self.max_op_time and self.run:
-            # 点击指定位置
+            # Click to specify location
             self.yys.mouse_click_bg(pos, pos_end)
-            self.log.info('点击 ' + tag)
+            self.log.info('Click on ' + tag)
             ut.mysleep(step_time*1000)
 
             result = self.yys.find_game_img(img_path)
             if not appear:
                 result = not result
             if result:
-                self.log.info('点击 ' + tag + ' 成功')
+                self.log.info('Click on ' + tag + ' success')
                 return True
 
-        # 提醒玩家点击失败，并在5s后退出
+        # Remind the player to fail to click and exit after 5s
         self.click_failed(tag)
 
     def click_until_multi(self, tag, *img_path, pos, pos_end=None, step_time=0.8):
         '''
-        在某一时间段内，后台点击鼠标，直到出现列表中任一图片
-            :param tag: 按键名
-            :param img_path: 图片路径
-            :param pos: (x,y) 鼠标单击的坐标
-            :param pos_end=None: (x,y) 若pos_end不为空，则鼠标单击以pos为左上角坐标pos_end为右下角坐标的区域内的随机位置
-            :step_time=0.5: 查询间隔
-            :return: 成功返回True, 失败退出游戏
+        In a certain period of time, click the mouse in the background until any picture in the list appears
+             :param tag: key name
+             :param img_path: image path
+             :param pos: (x,y) the coordinates of the mouse click
+             :param pos_end=None: (x,y) If pos_end is not empty, click the random position in the area where pos is the upper left corner coordinate and pos_end is the lower right corner coordinate
+             :step_time=0.5: query interval
+             :return: Return True if successful, exit the game if failed
         '''
-        # 在指定时间内反复监测画面并点击
+        # Repeatedly monitor the screen within the specified time and click
         start_time = time.time()
         while time.time()-start_time <= self.max_op_time and self.run:
-            # 点击指定位置
+            # Click to specify location
             self.yys.mouse_click_bg(pos, pos_end)
-            self.log.info('点击 ' + tag)
+            self.log.info('Click on ' + tag)
             ut.mysleep(step_time*1000)
 
             maxval, _ = self.yys.find_multi_img(*img_path)
             if max(maxval) > 0.9:
-                self.log.info('点击 ' + tag + ' 成功')
+                self.log.info('Click on ' + tag + ' success')
                 return True
 
-        # 提醒玩家点击失败，并在5s后退出
+        # Remind the player to fail to click and exit after 5s
         self.click_failed(tag)
 
     def click_until_knn(self, tag, img_path, pos, pos_end=None, step_time=0.8, appear=True, thread=0):
         '''
-        在某一时间段内，后台点击鼠标，直到出现某一图片出现或消失
-            :param tag: 按键名
-            :param img_path: 图片路径
-            :param pos: (x,y) 鼠标单击的坐标
-            :param pos_end=None: (x,y) 若pos_end不为空，则鼠标单击以pos为左上角坐标pos_end为右下角坐标的区域内的随机位置
-            :step_time=0.5: 查询间隔
-            :appear: 图片出现或消失：Ture-出现；False-消失
-            :thread: 检测阈值
-            :return: 成功返回True, 失败退出游戏
+        In a certain period of time, click the mouse in the background until a certain picture appears or disappears
+             :param tag: key name
+             :param img_path: image path
+             :param pos: (x,y) the coordinates of the mouse click
+             :param pos_end=None: (x,y) If pos_end is not empty, click the random position in the area where pos is the upper left corner coordinate and pos_end is the lower right corner coordinate
+             :step_time=0.5: query interval
+             :appear: The picture appears or disappears: Ture-appears; False-disappears
+             :thread: detection threshold
+             :return: Return True if successful, exit the game if failed
         '''
-        # 在指定时间内反复监测画面并点击
+        # Repeatedly monitor the screen within the specified time and click
         start_time = time.time()
         while time.time()-start_time <= self.max_op_time and self.run:
-            # 点击指定位置并等待下一轮
+            # Click on the designated location and wait for the next round
             self.yys.mouse_click_bg(pos, pos_end)
-            self.log.info('点击 ' + tag)
+            self.log.info('Click on ' + tag)
             ut.mysleep(step_time*1000)
 
             result = self.yys.find_game_img_knn(img_path, thread=thread)
             if not appear:
                 result = not result
             if result:
-                self.log.info('点击 ' + tag + ' 成功')
+                self.log.info('Click on ' + tag + ' success')
                 return True
 
-        # 提醒玩家点击失败，并在5s后退出
+        # Remind the player to fail to click and exit after 5s
         self.click_failed(tag)
 
     def click_failed(self, tag):
-        # 提醒玩家点击失败，并在5s后退出
-        self.log.warning('点击 ' + tag + ' 失败!')
+        # Remind the player to fail to click and exit after 5s
+        self.log.warning('Click on ' + tag + ' failure!')
         self.yys.activate_window()
         time.sleep(5)
         self.yys.quit_game()
 
     def activate(self):
-        self.log.warning('启动脚本')
+        self.log.warning('Startup script')
         self.run = True
         self.yys.run = True
 
     def deactivate(self):
-        self.log.warning('手动停止脚本')
+        self.log.warning('Manually stop the script')
         self.run = False
         self.yys.run = False
 
     def slide_x_scene(self, distance):
         '''
-        水平滑动场景
-            :return: 成功返回True; 失败返回False
+        Horizontal sliding scene
+             :return: Return True if successful; Return False if failed
         '''
         x0 = random.randint(distance + 10, 1126)
         x1 = x0 - distance
         y0 = random.randint(436, 486)
         y1 = random.randint(436, 486)
         self.yys.mouse_drag_bg((x0, y0), (x1, y1))
-        self.log.info('水平滑动界面')
+        self.log.info('Horizontal sliding interface')

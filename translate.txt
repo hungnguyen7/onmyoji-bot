@@ -1,0 +1,5 @@
+mitata: Ngự hồn
+goryou: thức tỉnh
+explore: thám hiểm
+explore/explore_dual: 'Onmyoji-NetEase Games' <= window title name
+FindWindow

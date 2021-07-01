@@ -8,16 +8,16 @@ import time
 
 
 class ExploreLeader(ExploreFight):
-    '''
-    组队探索队长
+    '''Team Exploration Captain
+    
     '''
 
     def __init__(self, hwnd=0, delay=False):
         '''
-        初始化
-            :param hwnd=0: 指定窗口句柄：0-否；其他-窗口句柄
-            :param mode=0: 狗粮模式：0-正常模式，1-组队后排狗粮
-            :param delay=False: 完成一轮探索后，是否等待1s再邀请下一轮
+        initialization
+             :param hwnd=0: Specified window handle: 0-No; other-window handle
+             :param mode=0: food mode: 0-normal mode, 1-row food after team
+             :param delay=False: After completing a round of exploration, whether to wait for 1 second before inviting the next round
         '''
         ExploreFight.__init__(self, hwnd=hwnd, mode=1)
         self.delay = delay
@@ -25,7 +25,7 @@ class ExploreLeader(ExploreFight):
 
     def prev_scene(self):
         '''
-        滑动到前一页面
+        Swipe to the previous page
         '''
         x0 = random.randint(510, 1126)
         x1 = x0 - 500
@@ -35,28 +35,28 @@ class ExploreLeader(ExploreFight):
 
     def start(self):
         '''
-        开始战斗
+        start fighting
         '''
         mood1 = ut.Mood(3)
         mood2 = ut.Mood(3)
         mood3 = ut.Mood()
         scene = self.get_scene()
         if scene == 4:
-            self.log.info('已进入探索，就绪')
+            self.log.info('Explored and ready')
         else:
-            self.log.warning('请检查是否进入探索内，退出')
+            self.log.warning('Please check if you have entered the exploration and exit')
             return
 
         while self.run:
-            # 检测当前场景
+            # Detect the current scene
             maxVal_list, maxLoc_list = self.yys.find_multi_img(
                 'img/DUI.png', 'img/YING-BING.png')
             if maxVal_list[0] < 0.8 and maxVal_list[1] > 0.8:
-                # 队长退出，结束
-                self.log.warning('队员已退出，脚本结束')
+                # The captain quits and ends
+                self.log.warning('The team member has exited, the script ends')
                 self.yys.quit_game()
 
-            # 开始打怪
+            # Start fighting monsters
             i = 0
             ok = False
             while self.run:
@@ -69,57 +69,57 @@ class ExploreLeader(ExploreFight):
                 elif result == 2:
                     break
                 else:
-                    self.log.info('移动至下一个场景')
+                    self.log.info('Move to the next scene')
                     self.next_scene()
                     i += 1
 
             if not ok:
-                # 没有经验怪，随便打一个
+                # No experience to blame, just hit one
                 fight_pos = self.yys.find_game_img('img/FIGHT.png')
                 while not fight_pos:
                     self.prev_scene()
                     fight_pos = self.yys.find_game_img('img/FIGHT.png')
-                # 攻击怪
+                # Attack monster
                 self.yys.mouse_click_bg(fight_pos)
-                self.log.info('已进入战斗')
+                self.log.info('Has entered the battle')
 
-                # 等待式神准备
+                # Waiting for shikigami to prepare
                 self.yys.wait_game_img_knn('img/ZHUN-BEI.png', thread=30)
-                self.log.info('式神准备完成')
+                self.log.info('Shikigami is ready')
 
-                # 检查狗粮经验
+                # Check food experience
                 self.check_exp_full()
 
-                # 点击准备，直到进入战斗
-                self.click_until_knn('准备按钮', 'img/ZHUN-BEI.png', *
+                # Click prepare until you enter the battle
+                self.click_until_knn('Ready button', 'img/ZHUN-BEI.png', *
                                      TansuoPos.ready_btn, mood1.get1mood()/1000, False, 30)
 
-                # 检查是否打完
+                # Check if it's done
                 state = self.check_end()
                 mood1.moodsleep()
 
-                # 在战斗结算页面
+                # On the battle settlement page
                 self.get_reward(mood2, state)
 
-            # 退出探索
-            self.log.info('结束本轮探索')
-            # 点击退出探索
-            self.click_until_multi('退出按钮', 'img/QUE-REN.png', 'img/TAN-SUO.png', 'img/JUE-XING.png',
+            # Exit exploration
+            self.log.info('End this round of exploration')
+            # Click to exit exploration
+            self.click_until_multi('Exit button', 'img/QUE-REN.png', 'img/TAN-SUO.png', 'img/JUE-XING.png',
                                    pos=TansuoPos.quit_btn[0], pos_end=TansuoPos.quit_btn[1], step_time=0.5)
 
-            # 点击确认
-            self.click_until('确认按钮', 'img/QUE-REN.png',
+            # Click to confirm
+            self.click_until('Confirm button', 'img/QUE-REN.png',
                              *TansuoPos.confirm_btn, 2, False)
 
-            # 等待司机退出1s
+            # Wait for the driver to exit for 1s
             if self.delay:
                 time.sleep(1)
 
-            # 下一轮自动邀请
+            # Next round of automatic invitation
             self.yys.wait_game_img('img/QUE-DING.png', self.max_win_time)
             time.sleep(0.5)
-            self.click_until('继续邀请', 'img/QUE-DING.png', *
+            self.click_until('Continue to invite', 'img/QUE-DING.png', *
                              TansuoPos.yaoqing_comfirm, mood3.get1mood()/1000, False)
 
-            # 检查游戏次数
+            # Check the number of games
             self.check_times()

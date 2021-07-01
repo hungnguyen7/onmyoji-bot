@@ -6,19 +6,19 @@ import configparser
 
 
 class SingleFight(Fighter):
-    '''单人御魂战斗，参数done, emyc'''
+    '''Single player soul fighting, default parameters'''
 
     def __init__(self, done=1, emyc=0):
-        # 初始化
+        # initialization
         Fighter.__init__(self, emyc)
 
-        # 读取配置文件
+        # Read configuration file
         conf = configparser.ConfigParser()
         conf.read('conf.ini')
         self.run_submode = conf.getint('mitama', 'run_submode')
 
     def start(self):
-        '''单人战斗主循环'''
+        '''Single player battle loop'''
         mood1 = ut.Mood()
         mood2 = ut.Mood()
         mood3 = ut.Mood(3)
@@ -29,30 +29,30 @@ class SingleFight(Fighter):
         elif self.run_submode == 2:
             self.switch_to_scene(8)
         while self.run:
-            # 在御魂主选单，点击“挑战”按钮, 需要使用“阵容锁定”！
+            # Click on the "Challenge" button in the main menu of Soul, you need to use "lineup lock'！
             self.yys.wait_game_img_knn(
                 'img\\TIAO-ZHAN.png', max_time=self.max_win_time, thread=20)
             mood1.moodsleep()
             self.yys.mouse_click_bg(*YuhunPos.tiaozhan_btn)
-            self.click_until_knn('挑战按钮', 'img\\TIAO-ZHAN.png',
+            self.click_until_knn('Challenge button', 'img\\TIAO-ZHAN.png',
                                  *YuhunPos.tiaozhan_btn, appear=False, thread=20)
 
-            # 检测是否进入战斗
+            # Check whether to enter the battle
             self.check_battle()
 
-            # 在战斗中，标记己方式神
+            # In battle, mark yourself as God
             self.mitama_team_click()
 
-            # 在战斗中，自动点怪
+            # In battle, automatically click the blame
             self.click_monster()
 
-            # 检测是否打完
+            # Check whether it is finished
             state = self.check_end()
             mood2.moodsleep()
 
-            # 在战斗结算页面
+            # On the battle settlement page
             self.get_reward(mood3, state)
-            self.log.info("回到选择界面")
+            self.log.info("Back to the selection interface")
 
-            # 检查游戏次数
+            # Check the number of games
             self.check_times()

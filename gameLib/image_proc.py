@@ -2,11 +2,11 @@ import cv2
 
 
 def match_img_knn(queryImage, trainingImage, thread=0):
-    sift = cv2.xfeatures2d.SIFT_create()  # 创建sift检测器
+    sift = cv2.xfeatures2d.SIFT_create()  # Create sift detector
     kp1, des1 = sift.detectAndCompute(queryImage, None)
     kp2, des2 = sift.detectAndCompute(trainingImage, None)
     #print(len(kp1))
-    # 设置Flannde参数
+    # Set Flannde parameters
     FLANN_INDEX_KDTREE = 1
     indexParams = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
     searchParams = dict(checks=50)
@@ -15,17 +15,17 @@ def match_img_knn(queryImage, trainingImage, thread=0):
 
     good = []
 
-    # 设置好初始匹配值
+    # Set the initial matching value
     matchesMask = [[0, 0] for i in range(len(matches))]
     for i, (m, n) in enumerate(matches):
-        if m.distance < 0.7*n.distance:  # 舍弃小于0.7的匹配结果
+        if m.distance < 0.7*n.distance:  # Discard matching results less than 0.7
             matchesMask[i] = [1, 0]
             good.append(m)
 
     s = sorted(good, key=lambda x: x.distance)
     '''
-    drawParams=dict(matchColor=(0,0,255),singlePointColor=(255,0,0),matchesMask=matchesMask,flags=0) #给特征点和匹配的线定义颜色
-    resultimage=cv2.drawMatchesKnn(queryImage,kp1,trainingImage,kp2,matches,None,**drawParams) #画出匹配的结果
+    drawParams=dict(matchColor=(0,0,255),singlePointColor=(255,0,0),matchesMask=matchesMask,flags=0) #Define colors for feature points and matching lines
+    resultimage=cv2.drawMatchesKnn(queryImage,kp1,trainingImage,kp2,matches,None,**drawParams) #Draw matching results
     cv2.imshow('res',resultimage)
     cv2.waitKey(0)
     '''
@@ -40,5 +40,5 @@ def match_img_knn(queryImage, trainingImage, thread=0):
 
 if __name__ == "__main__":
     queryImage = cv2.imread("img\\exp.png", 1)
-    trainingImage = cv2.imread("1.png", 1)  # 读取要匹配的灰度照片
+    trainingImage = cv2.imread("1.png", 1)  # Read the grayscale photos to be matched
     match_img_knn(queryImage, trainingImage)

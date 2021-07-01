@@ -7,66 +7,66 @@ import time
 
 
 class FighterPassenger(Fighter):
-    '''御魂战斗乘客程序，参数mode, emyc'''
+    '''Passenger program of Soul battle, parameter mode'''
 
     def __init__(self, emyc=0, hwnd=0, mark=True):
         '''
-        初始化
-            :param emyc=0: 点怪设置：0-不点怪
-            :param hwnd=0: 指定窗口句柄：0-否；其他-窗口句柄
-            :param mark=True: 是否全局启用标记功能
+        initialization
+             :param emyc=0: point monster setting: 0-no point blame
+             :param hwnd=0: Specified window handle: 0-No; other-window handle
+             :param mark=True: Whether to enable the mark function globally
         '''
         Fighter.__init__(self, emyc, hwnd)
         self.log = MyLog.plogger
         self.mark = mark
 
     def start(self):
-        '''单人御魂乘客'''
-        # 设定点击疲劳度
+        '''Single passenger'''
+        # Set click fatigue
         mood2 = ut.Mood()
         mood3 = ut.Mood(3)
 
-        # 战斗主循环
+        # Main loop of battle
         while self.run:
-            # 检测是否进入战斗
+            # Check whether to enter the battle
             self.check_battle()
 
-            # 在战斗中，标记己方式神
+            # In battle, mark yourself as God
             if self.mark:
                 self.mitama_team_click()
 
-            # 已经进入战斗，乘客自动点怪
+            # Has entered the battle, the passengers automatically click the blame
             self.click_monster()
 
-            # 检测是否打完
+            # Check whether it is finished
             state = self.check_end()
             mood2.moodsleep()
 
-            # 在战斗结算页面
+            # On the battle settlement page
             self.get_reward(mood3, state)
 
-            # 等待下一轮
-            self.log.info('Passenger: 等待下一轮')
+            # Waiting for the next round
+            self.log.info('Passenger: Waiting for the next round')
             start_time = time.time()
             while time.time() - start_time <= 5 and self.run:
-                # 检测是否回到队伍中
+                # Check if you are back in the team
                 if(self.yys.wait_game_img('img\\XIE-ZHAN-DUI-WU.png', 1, False)):
-                    self.log.info('Passenger: 进入队伍')
+                    self.log.info('Passenger: Enter the team')
                     break
 
-                # 检测是否有御魂邀请
+                # Check whether there is an invitation to the soul
                 yuhun_loc = self.yys.wait_game_img(
                     'img\\YU-HUN.png', 1, False)
                 if yuhun_loc:
-                    # 点击自动接受邀请
+                    # Click to automatically accept the invitation
                     if self.yys.find_game_img('img\\ZI-DONG-JIE-SHOU.png'):
                         self.yys.mouse_click_bg((210, yuhun_loc[1]))
-                        self.log.info('Passenger: 自动接受邀请')
+                        self.log.info('Passenger: Automatically accept invitation')
 
-                    # 点击普通接受邀请
+                    # Click Normal to accept the invitation
                     elif self.yys.find_game_img('img\\JIE-SHOU.png'):
                         self.yys.mouse_click_bg((125, yuhun_loc[1]))
-                        self.log.info('Passenger: 接受邀请')
+                        self.log.info('Passenger: accept an invitation')
             
-            # 检查游戏次数
+            # Check the number of games
             self.check_times()
