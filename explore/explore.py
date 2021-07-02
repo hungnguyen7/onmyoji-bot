@@ -189,7 +189,7 @@ class ExploreFight(Fighter):
             mood1.moodsleep()
             # Check whether to enter the exploration interface
             self.yys.wait_game_img('img\\YING-BING.png')
-            self.log.info('Enter the discovery page')
+            self.log.info('Enter the map')
 
             # Look for the experience monster, look for the boss if you don’t find it, and exit if you don’t find it
             fight_pos = self.find_exp_moster()
@@ -206,7 +206,8 @@ class ExploreFight(Fighter):
                     return -1
 
             # Attack monster
-            self.click_until('strange', 'img/YING-BING.png', fight_pos, step_time=0.3, appear=False)
+            # click_until(tag, *, pos, _)
+            self.click_until('Attack', 'img/YING-BING.png', fight_pos, step_time=0.3, appear=False)
             self.log.info('Has entered the battle')
 
             # Waiting for shikigami to prepare

@@ -75,7 +75,7 @@ class Fighter(GameScene):
         Check whether it is finished
              :return: The victory page returns 0; the reward page returns 1
         '''
-        self.log.info('The test is whether the battle is over')
+        self.log.info('Test is whether the battle is over')
         start_time = time.time()
         myend = -1
         while time.time()-start_time <= self.max_win_time and self.run:
@@ -101,7 +101,7 @@ class Fighter(GameScene):
         Monitor whether the number of games reaches the maximum number of times
         '''
         self.run_times = self.run_times + 1
-        self.log.info('Game is running'+str(self.run_times)+'Times')
+        self.log.info('Game is running '+str(self.run_times)+' times')
         if(self.run_times == self.max_times):
             if(self.end_operation == 0):
                 self.log.warning('Close script (the number of times is full)...')
@@ -156,7 +156,7 @@ class Fighter(GameScene):
             maxVal, maxLoc = self.yys.find_multi_img(
                 'img/SHENG-LI.png', 'img/TIAO-DAN.png', 'img/JIN-BI.png', 'img/JIE-SU.png')
             if max(maxVal) < 0.9:
-                self.log.info('Settled successfully')
+                self.log.info('Open gifts successfully')
                 return
 
         self.log.warning('Click to check out failed!')
@@ -210,7 +210,7 @@ class Fighter(GameScene):
              :param pos: (x,y) the coordinates of the mouse click
              :param pos_end=None: (x,y) If pos_end is not empty, click the random position in the area where pos is the upper left corner coordinate and pos_end is the lower right corner coordinate
              :step_time=0.5: query interval
-             :appear: The picture appears or disappears: Ture-appears; False-disappears
+             :appear: The picture appears or disappears: True-appears; False-disappears
              :return: Return True if successful, exit the game if failed
         '''
         # Repeatedly monitor the screen within the specified time and click

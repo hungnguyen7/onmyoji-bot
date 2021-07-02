@@ -108,7 +108,7 @@ class ExploreLeader(ExploreFight):
                                    pos=TansuoPos.quit_btn[0], pos_end=TansuoPos.quit_btn[1], step_time=0.5)
 
             # Click to confirm
-            self.click_until('Confirm button', 'img/QUE-REN.png',
+            self.click_until('Ok button', 'img/QUE-REN.png',
                              *TansuoPos.confirm_btn, 2, False)
 
             # Wait for the driver to exit for 1s

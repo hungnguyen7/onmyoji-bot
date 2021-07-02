@@ -8,11 +8,11 @@ from tkinter import ttk
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
-        self.url = 'http://www.onmyojibot.com'
+        self.url = 'https://github.com/hungnguyen7/onmyoji-bot'
         self.source_url = 'https://github.com/AcademicDog/onmyoji_bot'
         self.master = master
         self.master.iconbitmap('img/icon/OnmyojiBot.ico')
-        self.master.wm_title('OnmyojiBot')
+        self.master.wm_title('Onmyoji Bot')
         self.pack()
 
         # Initialization parameters
@@ -87,9 +87,9 @@ class Application(tk.Frame):
 
         # Create menu items
         menu1 = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="File", menu=menu1)
+        menubar.add_cascade(label="Action", menu=menu1)
         menu1.add_command(label='Start', command=self.start_onmyoji)
-        menu1.add_command(label='Exit', command=self.stop_onmyoji)
+        menu1.add_command(label='Close', command=self.stop_onmyoji)
 
         # advanced options
         menu2 = tk.Menu(menubar, tearoff=0)
@@ -99,7 +99,7 @@ class Application(tk.Frame):
         # help
         menu3 = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label='Help', menu=menu3)
-        menu3.add_command(label='On', command=self.say_hi)
+        menu3.add_command(label='Show', command=self.say_hi)
         menu3.add_command(label='Instructions for use', command=self.help)
         menu3.add_separator()
         menu3.add_command(label='Donate', command=self.donate)
@@ -109,7 +109,7 @@ class Application(tk.Frame):
 
     def create_title(self):
         # title
-        tk.Label(self.master, text='OnmyojiBot',
+        tk.Label(self.master, text='Onmyoji Bot',
                  font='Helvetica 20 bold').pack(anchor=tk.W)
         tk.Label(
             self.master, text=self.url).pack(anchor=tk.W)
@@ -146,7 +146,7 @@ class Application(tk.Frame):
 
         # Create tab 3-Explore
         self.frame2 = tk.Frame(self.section, padx=5, pady=5)
-        self.section.add(self.frame2, text='Exploration')
+        self.section.add(self.frame2, text='Explore')
 
         # Create Tab 4-About
         self.frame3 = tk.Frame(self.section)
@@ -177,7 +177,7 @@ class Application(tk.Frame):
         submode.pack(padx=5, pady=5, fill=tk.BOTH, expand=True)
         tk.Radiobutton(submode, text='Orichi', variable=self.run_submode,
                        value=0).grid(row=0, column=0, sticky=tk.W)
-        tk.Radiobutton(submode, text='Greed-Anger-Foolery', variable=self.run_submode,
+        tk.Radiobutton(submode, text='Sougenbi', variable=self.run_submode,
                        value=1).grid(row=0, column=1, sticky=tk.W)
         tk.Radiobutton(submode, text='Himiko', variable=self.run_submode,
                        value=2).grid(row=1, column=0, sticky=tk.W)
@@ -188,7 +188,7 @@ class Application(tk.Frame):
         tk.Label(mitama_mark, text='Mark shikigami:').pack(side=tk.LEFT)
         self.mitama_team_mark = ttk.Combobox(mitama_mark, width=10)
         self.mitama_team_mark['value'] = (
-            'Unmarked', 'The first shikigami', 'The second shikigami', 'The third shikigami', 'The 4th shikigami', 'The fifth shikigami')
+            'Unmarked', 'The first shikigami', 'The second shikigami', 'The third shikigami', 'The 4th shikigami', 'The 5th shikigami')
         self.mitama_team_mark.pack(fill=tk.X, expand=True, padx=2)
         self.mitama_team_mark.current(0)
         self.mitama_team_mark.config(state='readonly')
@@ -199,7 +199,7 @@ class Application(tk.Frame):
         '''
         text = tk.Text(self.frame1, height=5, width=25)
         text.pack(padx=5, pady=5, expand=True, fill=tk.BOTH, anchor=tk.NW)
-        text.insert(tk.END, 'Select the Evo and the number of layers you want to play, and click the start button.')
+        text.insert(tk.END, 'Select the Evo Materials in Onmyoji (lock the lineup) and the number of battle you want to play, and click the start button.')
         text.config(state=tk.DISABLED)
 
     def create_frame2(self):
@@ -225,7 +225,7 @@ class Application(tk.Frame):
             food, text='Left', variable=self.gouliang_1)
         self.gouliang_l.grid(row=0, column=0)
         self.gouliang_m = tk.Checkbutton(
-            food, text='In', variable=self.gouliang_2)
+            food, text='Middle', variable=self.gouliang_2)
         self.gouliang_m.grid(row=0, column=1)
         self.gouliang_r = tk.Checkbutton(
             food, text='Right', variable=self.gouliang_3)
@@ -243,12 +243,12 @@ class Application(tk.Frame):
         self.gouliang_rb.config(state=tk.DISABLED)
 
         # Change food settings
-        tk.Checkbutton(self.frame2, text='Change dog food drag and drop progress bar, progress:',
+        tk.Checkbutton(self.frame2, text='Change food drag and drop progress bar:',
                        variable=self.slide_shikigami).pack(anchor=tk.W)
-        tk.Scale(self.frame2, from_=0, to=100, orient=tk.HORIZONTAL, showvalue=0,
+        tk.Scale(self.frame2, from_=0, to=100, orient=tk.HORIZONTAL, showvalue=1,
                  variable=self.slide_shikigami_progress).pack(fill=tk.X)
         self.cmb = ttk.Combobox(self.frame2)
-        self.cmb['value'] = ('Change material', 'Replace N shiki', 'Replace R shiki')
+        self.cmb['value'] = ('Replace material', 'Replace N shikigami', 'Replace R shikigami')
         self.cmb.pack(fill=tk.X, padx=2)
         self.cmb.current(self.change_shikigami)
         self.cmb.config(state='readonly')
@@ -266,9 +266,7 @@ class Application(tk.Frame):
         text.insert(
             tk.END, 'Website：%s\n\n' % (self.url))
         text.insert(
-            tk.END, 'Source code：%s\n\n' % (self.source_url))
-        text.insert(
-            tk.END, 'Exchange Q group：592055060\n\n')
+            tk.END, 'Source fork from：%s\n\n' % (self.source_url))
         text.insert(
             tk.END, 'If you think the script action is too slow, please go to the advanced menu to customize the delay.')
         text.config(state=tk.DISABLED)
@@ -324,9 +322,9 @@ class Application(tk.Frame):
         '''
         button_area = tk.Frame(self.main_frame2)
         button_area.pack(fill=tk.X, side=tk.BOTTOM, padx=5, pady=5)
-        tk.Button(button_area, text='Begin',
+        tk.Button(button_area, text='Start',
                   command=self.start_onmyoji).pack(fill=tk.X)
-        tk.Button(button_area, text='End',
+        tk.Button(button_area, text='Close',
                   command=self.stop_onmyoji).pack(fill=tk.X)
 
     def show_params(self):
@@ -373,7 +371,7 @@ class Application(tk.Frame):
         test
         '''
         tk.messagebox.showinfo(
-            "OnmyojiBot", 'Website：%s\n\nSource code：%s\n\nExchange Q group：592055060' % (self.url, self.source_url))
+            "Onmyoji Bot", 'Website：%s\n\nSource code：%s\n' % (self.url, self.source_url))
 
     def delay_dialog(self):
         pw = DelayDialog(self)
@@ -384,7 +382,7 @@ class Application(tk.Frame):
         Instructions for use
         '''
         Q = tk.messagebox.askyesno(
-            "Instructions for use", 'For detailed instructions, please refer to%s\n\nWhether to visit?' % (self.url))
+            "Instructions for use", 'For detailed instructions, please refer to %s\n\nWhether to visit?' % (self.url))
         if Q:
             webbrowser.open(self.url)
 

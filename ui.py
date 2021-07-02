@@ -42,7 +42,7 @@ class MyBattle(Application):
         self.conf.set('others', 'debug_enable', str(
             self.debug_enable.get()))
 
-        # Yuhun parameters
+        # Soul parameters
         self.conf.set('DEFAULT', 'run_mode', str(self.run_mode.get()))
         self.conf.set('DEFAULT', 'max_times', str(self.max_times.get()))
         self.conf.set('DEFAULT', 'end_operation',
@@ -88,7 +88,8 @@ class MyBattle(Application):
         # Read primary copy
         self.get_conf()
 
-        subprocess.Popen("cmd.exe /c start Core.exe")
+        subprocess.Popen("cmd.exe /c start onmyoji.exe")
+        # subprocess.check_output('source activate onmyoji', shell=True)
         # os.system("onmyoji.exe")
 
     def stop_onmyoji(self):

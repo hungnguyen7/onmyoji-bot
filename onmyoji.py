@@ -82,7 +82,7 @@ def init():
 
 
 def is_admin():
-    # UAC application, get administrator rights
+    # UAC application, get administrator
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:

@@ -1,1 +1,29 @@
-2021 Jul 01 12:55:55 ui.py             [line:122] INFO    root      Admin rights have been granted
+2021 Jul 02 12:31:44 onmyoji.py        [line:116] INFO    root      UAC pass
+2021 Jul 02 12:31:44 fighter.py        [line:51 ] INFO    root      Bind the window successfully
+2021 Jul 02 12:31:44 fighter.py        [line:52 ] INFO    root      459514
+2021 Jul 02 12:31:44 fighter.py        [line:56 ] INFO    root      Activate the window successfully
+2021 Jul 02 12:31:45 utilities.py      [line:43 ] INFO    root      Use default delay parameters
+2021 Jul 02 12:31:45 utilities.py      [line:49 ] INFO    root      Delay parameter: {1: (1000, 500), 2: (1300, 800), 3: (1800, 1200), 4: (2500, 1500), 5: (3000, 2000)}
+2021 Jul 02 12:31:45 utilities.py      [line:25 ] INFO    root      Create delay parameter, level: 2
+2021 Jul 02 12:31:45 utilities.py      [line:25 ] INFO    root      Create delay parameter, level: 3
+2021 Jul 02 12:31:45 fighter.py        [line:69 ] INFO    Passenger Check whether to enter the battle
+2021 Jul 02 12:31:45 fighter.py        [line:71 ] INFO    Passenger Has entered the battle
+2021 Jul 02 12:31:45 fighter.py        [line:78 ] INFO    Passenger Test is whether the battle is over
+2021 Jul 02 12:31:58 fighter.py        [line:93 ] INFO    Passenger Successful battle
+2021 Jul 02 12:32:00 fighter.py        [line:127] INFO    Passenger Click to check out
+2021 Jul 02 12:32:02 fighter.py        [line:143] INFO    Passenger Click to check out
+2021 Jul 02 12:32:05 fighter.py        [line:143] INFO    Passenger Click to check out
+2021 Jul 02 12:32:07 fighter.py        [line:159] INFO    Passenger Open gifts successfully
+2021 Jul 02 12:32:07 fighter_passenger.py [line:49 ] INFO    Passenger Passenger: Waiting for the next round
+2021 Jul 02 12:32:14 fighter.py        [line:104] INFO    Passenger Game is running 1 times
+2021 Jul 02 12:32:14 fighter.py        [line:69 ] INFO    Passenger Check whether to enter the battle
+2021 Jul 02 12:32:18 fighter.py        [line:71 ] INFO    Passenger Has entered the battle
+2021 Jul 02 12:32:18 fighter.py        [line:78 ] INFO    Passenger Test is whether the battle is over
+2021 Jul 02 12:32:53 fighter.py        [line:93 ] INFO    Passenger Successful battle
+2021 Jul 02 12:32:55 fighter.py        [line:127] INFO    Passenger Click to check out
+2021 Jul 02 12:32:56 fighter.py        [line:143] INFO    Passenger Click to check out
+2021 Jul 02 12:32:59 fighter.py        [line:143] INFO    Passenger Click to check out
+2021 Jul 02 12:33:02 fighter.py        [line:159] INFO    Passenger Open gifts successfully
+2021 Jul 02 12:33:02 fighter_passenger.py [line:49 ] INFO    Passenger Passenger: Waiting for the next round
+2021 Jul 02 12:33:09 fighter.py        [line:104] INFO    Passenger Game is running 2 times
+2021 Jul 02 12:33:09 fighter.py        [line:69 ] INFO    Passenger Check whether to enter the battle

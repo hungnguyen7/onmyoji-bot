@@ -17,13 +17,13 @@ class GameScene():
              4- Explore within;
              5- Yuhun menu;
              6- the beginning of the soul
-             7-Industry fire begins
+             7- Industry fire begins
              8- The beginning of Himiho
         '''
         # Refuse to offer a reward
         self.yys.rejectbounty()
 
-        # Identify courtyards, explorations, chapter pages, and explore interiors separately
+        # Identify courtyards, explorations, explore battle, and explore interiors separately
         maxVal, maxLoc = self.yys.find_multi_img(
             'img/JIA-CHENG.png', 'img/JUE-XING.png', 'img/TAN-SUO.png', 'img/YING-BING.png', 'img/BA-QI-DA-SHE.png', 'img/TIAO-ZHAN.png')
 
@@ -47,7 +47,7 @@ class GameScene():
             self.log.info('The scene is not recognized yet, try again after 2s')
             time.sleep(2)
             scene_now = self.get_scene()
-            self.log.info('Current scene:' + str(scene_now))
+            self.log.info('Current scene: ' + str(scene_now))
 
         if scene_now == scene:
             return True
@@ -59,15 +59,15 @@ class GameScene():
                 time.sleep(2)
                 self.slide_x_scene(800)
 
-                # Click on the exploration lantern to enter the exploration interface
-                self.click_until('Explore the lantern', 'img/JUE-XING.png', *
-                                 TansuoPos.tansuo_denglong, 2)
+                # click on the explorer selection to enter the exploration interface, if see JUE-XING img then stop
+                self.click_until('Explore Button', 'img/JUE-XING.png',
+                                 *TansuoPos.tansuo_denglong, 2)
 
                 # Recursion
                 self.switch_to_scene(scene)
 
         elif scene_now == 2:
-            # Explore the interface
+            # Explore interface
             if scene == 3 or scene == 4:
                 # Click on the last chapter
                 self.click_until('Final chapter', 'img/TAN-SUO.png',
@@ -75,19 +75,19 @@ class GameScene():
                 # Recursion
                 self.switch_to_scene(scene)
             elif scene in [5, 6, 7, 8]:
-                # Click the Yusoul button
-                self.click_until('Yusoul Menu', 'img/BA-QI-DA-SHE.png',
+                # Click the Soul button
+                self.click_until('Soul Button', 'img/BA-QI-DA-SHE.png',
                                  *YuhunPos.yuhun_menu, 2)
                 # Recursion
                 self.switch_to_scene(scene)
 
         elif scene_now == 3:
-            # Chapter interface
+            # Passanger explore_mode
             if scene == 4:
                 # Click the Explore button
                 self.click_until('Explore button', 'img/YING-BING.png',
                                  *TansuoPos.tansuo_btn, 2)
-                # 递归
+                # Recursion
                 self.switch_to_scene(scene)
             elif scene in [5, 6, 7, 8]:
                 self.click_until('Exit chapter', 'img/JUE-XING.png',
@@ -95,35 +95,35 @@ class GameScene():
                 self.switch_to_scene(scene)
 
         elif scene_now == 4:
-            # Explore within
+            # Explore
             if scene in [2, 3]:
                 # Click to exit exploration
                 self.click_until_multi('Exit button', 'img/QUE-REN.png', 'img/TAN-SUO.png', 'img/JUE-XING.png',
                                  pos=TansuoPos.quit_btn[0], pos_end=TansuoPos.quit_btn[1], step_time=0.5)
 
                 # Click to confirm
-                self.click_until('Confirm button', 'img\\QUE-REN.png',
+                self.click_until('Ok', 'img\\QUE-REN.png',
                                  *TansuoPos.confirm_btn, 2, False)
                 # Recursion
                 self.switch_to_scene(scene)
 
         elif scene_now == 5:
-            # In the Yuhun menu
+            # In the Soul menu
             if scene == 6:
-                # Click Yuhun
-                self.click_until_knn('Yusoul option', 'img/TIAO-ZHAN.png',
+                # Click Soul challenge
+                self.click_until_knn('Soul challenge option', 'img/TIAO-ZHAN.png',
                                      *YuhunPos.yuhun_btn, 2, thread=20)
                 # Recursion
                 self.switch_to_scene(scene)
             elif scene == 7:
-                # Click on the original fire
-                self.click_until_knn('Industry original fire option', 'img/TIAO-ZHAN.png',
+                # Click Sougenbi challenge
+                self.click_until_knn('Sougenbi challenge option', 'img/TIAO-ZHAN.png',
                                      *YuhunPos.yeyuanhuo_btn, 2, thread=20)
                 # Recursion
                 self.switch_to_scene(scene)
             elif scene == 8:
-                # Click Himiho
-                self.click_until_knn('Himiho options', 'img/TIAO-ZHAN.png',
+                # Click Himiho challenge
+                self.click_until_knn('Himiko challenge options', 'img/TIAO-ZHAN.png',
                                      *YuhunPos.beimihu_btn, 2, thread=20)
                 # Recursion
                 self.switch_to_scene(scene)
